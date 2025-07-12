@@ -1,0 +1,46 @@
+from flask import Flask, render_template, request, redirect, url_for
+import json
+from datetime import datetime
+import os
+
+app = Flask(_name_)
+
+@app.route("/submit-rating", methods=["POST"])
+def submit_rating():
+    name = request.form.get("name")
+    rating = request.form.get("rating")
+    comment = request.form.get("comment")
+
+    new_rating = {
+        "name": name,
+        "rating": rating,
+        "comment": comment,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "read": False
+    }
+
+    # ملف التقييمات
+    filename = "ratings.json"
+
+    # إذا ما كان موجود، ننشئه
+    if not os.path.exists(filename):
+        open(filename, "w", encoding="utf-8").close()
+
+    # نضيف التقييم للملف
+    with open(filename, "a", encoding="utf-8") as file:
+        file.write(json.dumps(new_rating, ensure_ascii=False) + "\n")
+
+    return redirect("/admin-ratings")
+
+
+@app.route("/admin-ratings")
+def admin_ratings():
+    ratings = []
+    filename = "ratings.json"
+
+    if os.path.exists(filename):
+        with open(filename, "r", encoding="utf-8") as file:
+            for line in file:
+                ratings.append(json.loads(line))
+
+    return render_template("admin_ratings.html", ratings=ratings)
