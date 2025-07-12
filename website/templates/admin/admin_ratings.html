@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تقييمات الطلاب</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>📋 تقييمات الطلاب</h2>
+
+  {% if ratings %}
+    {% for r in ratings %}
+      <div class="card">
+        <strong>👤 {{ r.name }}</strong> — ⭐ {{ r.rating }}/5<br>
+        💬 {{ r.comment }}<br>
+        <small>🕒 {{ r.timestamp }}</small>
+        <hr>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>لا توجد تقييمات بعد.</p>
+  {% endif %}
+
+  <a href="{{ url_for('admin_dashboard') }}">⬅ الرجوع للوحة التحكم</a>
+</body>
+</html>
